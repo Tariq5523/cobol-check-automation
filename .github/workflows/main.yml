@@ -18,6 +18,16 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install Zowe CLI
+        run: |
+          npm install -g @zowe/cli
+          zowe --version
+
       - name: Setup Mainframe Environment and Upload COBOL Check
         env:
           ZOWE_USERNAME: ${{ secrets.ZOWE_USERNAME }}
