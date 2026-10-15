@@ -35,7 +35,7 @@ zowe zos-files upload dir-to-uss \
   "./cobol-check" \
   "$USS_DIR" \
   --recursive \
-  --binary-files "cobol-check-0.2.9.jar" \
+  --binary-files "cobol-check-0.2.19.jar" \
   "${ZOWE_CONNECTION[@]}"
 
 # Verify upload
