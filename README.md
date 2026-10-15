@@ -1,4 +1,4 @@
 # cobol-check-automation
 Automating COBOL testing with cobolcheck and Github Actions
 
-Learning gibhub actions
+Learning gibhub actions today inshallah
