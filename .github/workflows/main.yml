@@ -46,4 +46,4 @@ jobs:
           ZOWE_PASSWORD: ${{ secrets.ZOWE_PASSWORD }}
         run: |
           chmod +x .github/scripts/mainframe_operations.sh
-          .github/scripts/zowe_operations.sh
+          .github/scripts/mainframe_operations.sh
