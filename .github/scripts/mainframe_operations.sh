@@ -83,8 +83,7 @@ run_cobolcheck() {
     fi
 }
 
-# LAB 1 and LAB 2
-for program in NUMBERS EMPPAY; do
+for program in NUMBERS EMPPAY DEPTPAY; do
     run_cobolcheck "$program"
 done
 
