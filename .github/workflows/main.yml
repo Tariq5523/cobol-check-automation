@@ -59,11 +59,12 @@ jobs:
           ZOWE_SSH_PORT: ${{ secrets.ZOWE_SSH_PORT }}
         run: |
           set -e
+
           UPPER_USER=$(echo "$ZOWE_USERNAME" | tr '[:lower:]' '[:upper:]')
           LOWER_USER=$(echo "$ZOWE_USERNAME" | tr '[:upper:]' '[:lower:]')
           USS_DIR="/z/$LOWER_USER/cobolcheck"
-
-          # Runs on z/OS USS (not on the GitHub runner); output streams back here
+      
           zowe zos-uss issue ssh \
             "bash $USS_DIR/mainframe_operations.sh $UPPER_USER" \
-            --port "${ZOWE_SSH_PORT:-22}"
+            --port "${ZOWE_SSH_PORT:-22}" \
+            --insecure
