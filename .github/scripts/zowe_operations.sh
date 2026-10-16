@@ -16,15 +16,17 @@ export ZOWE_OPT_REJECT_UNAUTHORIZED="false"
 echo "Using USS directory: $USS_DIR"
 
 # Check whether USS directory exists
-if ! zowe zos-files list uss-files "$USS_DIR" > /dev/null 2>&1; then
+# Remove previous COBOL Check directory if it exists
+if zowe zos-files list uss-files "$USS_DIR" > /dev/null 2>&1; then
+  echo "Existing COBOL Check directory found. Removing it..."
 
-  echo "Directory does not exist. Creating it..."
-
-  zowe zos-files create uss-directory "$USS_DIR"
-
-else
-  echo "Directory already exists."
+  zowe zos-files delete uss-file "$USS_DIR" --recursive
 fi
+
+# Create clean COBOL Check directory
+echo "Creating clean COBOL Check directory..."
+
+zowe zos-files create uss-directory "$USS_DIR"
 
 # Upload COBOL Check
 echo "Uploading COBOL Check..."
