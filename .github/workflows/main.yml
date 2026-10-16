@@ -28,6 +28,18 @@ jobs:
           npm install -g @zowe/cli
           zowe --version
 
+      - name: Trust mainframe CA certificate (optional)
+        env:
+          ZOWE_CA_CERT: ${{ secrets.ZOWE_CA_CERT }}
+        run: |
+          if [ -n "$ZOWE_CA_CERT" ]; then
+            printf '%s\n' "$ZOWE_CA_CERT" > "$RUNNER_TEMP/zowe-ca.pem"
+            echo "NODE_EXTRA_CA_CERTS=$RUNNER_TEMP/zowe-ca.pem" >> "$GITHUB_ENV"
+            echo "Custom CA certificate configured"
+          else
+            echo "No custom CA certificate provided; using default trust store"
+          fi
+
       - name: Setup Mainframe Environment and Upload COBOL Check
         env:
           ZOWE_HOST: ${{ secrets.ZOWE_HOST }}
@@ -40,10 +52,18 @@ jobs:
 
       - name: Run COBOL Check on Mainframe
         env:
-          ZOWE_HOST: ${{ secrets.ZOWE_HOST }}
-          ZOWE_PORT: ${{ secrets.ZOWE_PORT }}
+          ZOWE_OPT_HOST: ${{ secrets.ZOWE_HOST }}
+          ZOWE_OPT_USER: ${{ secrets.ZOWE_USERNAME }}
+          ZOWE_OPT_PASSWORD: ${{ secrets.ZOWE_PASSWORD }}
           ZOWE_USERNAME: ${{ secrets.ZOWE_USERNAME }}
-          ZOWE_PASSWORD: ${{ secrets.ZOWE_PASSWORD }}
+          ZOWE_SSH_PORT: ${{ secrets.ZOWE_SSH_PORT }}
         run: |
-          chmod +x .github/scripts/mainframe_operations.sh
-          .github/scripts/mainframe_operations.sh
+          set -e
+          UPPER_USER=$(echo "$ZOWE_USERNAME" | tr '[:lower:]' '[:upper:]')
+          LOWER_USER=$(echo "$ZOWE_USERNAME" | tr '[:upper:]' '[:lower:]')
+          USS_DIR="/z/$LOWER_USER/cobolcheck"
+
+          # Runs on z/OS USS (not on the GitHub runner); output streams back here
+          zowe zos-uss issue ssh \
+            "bash $USS_DIR/mainframe_operations.sh $UPPER_USER" \
+            --port "${ZOWE_SSH_PORT:-22}"
