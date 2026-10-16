@@ -43,41 +43,40 @@ run_cobolcheck() {
     echo "Running COBOL Check for $program"
     echo "========================================"
 
+    GENERATED_COBOL="testruns/CC##99.CBL"
+
+    # Remove output from previous program
+    rm -f "$GENERATED_COBOL"
+
     # Run COBOL Check
-    # Do not stop the script yet if COBOL Check returns non-zero
     ./cobolcheck -p "$program" || true
 
     echo "COBOL Check execution completed for $program"
 
-    # COBOL Check 0.2.19 generates the COBOL test program here
-    GENERATED_COBOL="testruns/CC##99.CBL"
-
-    # Copy generated COBOL program into the CBL dataset
+    # Verify THIS program generated the test COBOL
     if [ -f "$GENERATED_COBOL" ]; then
-
         echo "Generated $GENERATED_COBOL found"
 
         if cp "$GENERATED_COBOL" "//'${ZOWE_USERNAME}.CBL(${program})'"; then
             echo "Copied CC##99.CBL to ${ZOWE_USERNAME}.CBL(${program})"
         else
-            echo "ERROR: Failed to copy CC##99.CBL to ${ZOWE_USERNAME}.CBL(${program})"
+            echo "ERROR: Failed to copy generated COBOL for $program"
+            return
         fi
-
     else
-        echo "ERROR: $GENERATED_COBOL not found for $program"
+        echo "ERROR: COBOL Check did not generate $GENERATED_COBOL for $program"
+        return
     fi
 
-    # Copy JCL into the JCL dataset
+    # Verify JCL exists
     if [ -f "${program}.JCL" ]; then
-
         echo "${program}.JCL found"
 
         if cp "${program}.JCL" "//'${ZOWE_USERNAME}.JCL(${program})'"; then
             echo "Copied ${program}.JCL to ${ZOWE_USERNAME}.JCL(${program})"
         else
-            echo "ERROR: Failed to copy ${program}.JCL to ${ZOWE_USERNAME}.JCL(${program})"
+            echo "ERROR: Failed to copy ${program}.JCL"
         fi
-
     else
         echo "ERROR: ${program}.JCL not found"
     fi
