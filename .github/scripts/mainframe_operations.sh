@@ -1,5 +1,6 @@
 #!/bin/bash
-# mainframe_operations.sh
+# mainframe_operations.sh - runs on z/OS USS via SSH
+# Usage: mainframe_operations.sh <MAINFRAME_USERNAME>
 
 # Set up Java environment
 export JAVA_HOME=/usr/lpp/java/J8.0_64
@@ -11,11 +12,12 @@ export PATH="/usr/lpp/zowe/cli/node/bin:$PATH"
 # Check Java availability
 java -version
 
-# Set your mainframe username
-ZOWE_USERNAME="Z81174"  # Replace with your actual username
+# Mainframe username (passed in by the workflow; defaults to Z81174)
+ZOWE_USERNAME="${1:-Z81174}"
+LOWERCASE_USERNAME=$(echo "$ZOWE_USERNAME" | tr '[:upper:]' '[:lower:]')
 
-# Change to the COBOL Check directory
-cd cobolcheck || exit 1
+# Change to the COBOL Check directory (absolute path, not dependent on login dir)
+cd "/z/${LOWERCASE_USERNAME}/cobolcheck" || { echo "ERROR: cobolcheck directory not found"; exit 1; }
 
 echo "Changed to $(pwd)"
 ls -al
@@ -69,4 +71,3 @@ for program in NUMBERS EMPPAY DEPTPAY; do
 done
 
 echo "Mainframe operations completed"
-`
