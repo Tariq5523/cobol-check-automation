@@ -51,6 +51,13 @@ zowe zos-files upload file-to-uss \
   "./EMPPAY.JCL" \
   "$USS_DIR/EMPPAY.JCL"  
 
+# Upload DEPTPAY.JCL for Lab 3
+echo "Uploading DEPTPAY.JCL..."
+
+zowe zos-files upload file-to-uss \
+  "./DEPTPAY.JCL" \
+  "$USS_DIR/DEPTPAY.JCL"
+
 # Upload script that will run on USS
 echo "Uploading mainframe_operations.sh..."
 
