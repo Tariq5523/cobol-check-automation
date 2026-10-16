@@ -83,7 +83,9 @@ run_cobolcheck() {
     fi
 }
 
-# LAB 1: Run NUMBERS only
-run_cobolcheck NUMBERS
+# LAB 1 and LAB 2
+for program in NUMBERS EMPPAY; do
+    run_cobolcheck "$program"
+done
 
 echo "Mainframe operations completed"
