@@ -20,7 +20,7 @@ echo "Using USS directory: $USS_DIR"
 if zowe zos-files list uss-files "$USS_DIR" > /dev/null 2>&1; then
   echo "Existing COBOL Check directory found. Removing it..."
 
-  zowe zos-files delete uss-file "$USS_DIR" --recursive
+  zowe zos-files delete uss-file "$USS_DIR" --recursive --for-sure
 fi
 
 # Create clean COBOL Check directory
